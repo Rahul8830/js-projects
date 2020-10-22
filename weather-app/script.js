@@ -3,6 +3,7 @@ const token="c834f2f7b7a9bb85c9d4b2e50ebf553c";
 const url="http://api.weatherapi.com/v1/current.json?key="+key+"&q=";
 const ipUrl="http://api.ipapi.com/api/check?access_key="+token;
 button=document.querySelector("#btn");
+let first=0;
 
 button.addEventListener("click",searchCity);
 window.onload = displayFirst();
@@ -15,12 +16,15 @@ async function displayFirst()
         let locText=document.createElement("h1");
         locText.classList.add("lText");
         locContainer.appendChild(locText);
+        let weatherDiv=document.createElement("div");
+        weatherDiv.classList.add("weaDiv");
         let icnDiv=document.createElement("div");
         icnDiv.classList.add("icn");
         let tempDiv=document.createElement("div");
         tempDiv.classList.add("weather");
-        locContainer.appendChild(icnDiv);
-        locContainer.appendChild(tempDiv);
+        weatherDiv.appendChild(icnDiv);
+        weatherDiv.appendChild(tempDiv);
+        locContainer.appendChild(weatherDiv);
         fillData(data);
 
 }
@@ -28,10 +32,11 @@ function fillData(wData){
     let text=document.querySelector(".lText");
     let icnDivNew=document.querySelector(".icn");
     let tempDivNew=document.querySelector(".weather");
+    console.log(sessionStorage.getItem("city"));
     console.log(wData);
-    if(sessionStorage.getItem("city")==undefined)
+    if(first==0)
     {
-        text.innerTex="You are currently in "+data.location.name+", "+data.location.region+", "+data.location.country;
+        text.innerText="You are currently in "+wData.location.name+", "+wData.location.region+", "+wData.location.country;
     }
     else{
         text.innerText=wData.location.name+", "+wData.location.region+", "+wData.location.country;
@@ -48,6 +53,7 @@ async function searchCity(){
     sessionStorage.setItem("city",cityName);
     let wData=await getWeather();
     fillData(wData);
+    first=1;
 }
 async function storeCity(){
         let responseIp=await fetch(ipUrl);
